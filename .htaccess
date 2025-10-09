@@ -1,0 +1,18 @@
+# 1. Disable Directory Browsing
+# Prevents a visitor from seeing a file list if they navigate to an empty folder.
+Options -Indexes
+
+# 2. Block Access to All Sensitive Configuration & Development Files
+# This directive uses a regular expression to match multiple file names.
+# This list covers .env, git/svn/hg files, composer files, package files, etc.
+<FilesMatch "^\.(env|git|svn|hg)|composer\.(json|lock)|package\.json|webpack\.mix\.js|package-lock\.json|npm-debug\.log|yarn\.lock|storage|vendor|app|bootstrap|config|database|resources|routes|tests">
+    # For Apache 2.4+ (WAMP/XAMPP default): Block all access
+    Require all denied
+    
+    # For older Apache 2.2 (Fallback):
+    Order deny,allow
+    Deny from all
+</FilesMatch>
+
+# Blocks access to the private storage folder, even if it's linked to the public directory.
+RewriteRule ^storage\/(.*)$ - [F] 
