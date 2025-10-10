@@ -55,55 +55,71 @@
                 </a>
             </div>
             <div class="card-body login-card-body">
-                <p class="login-box-msg">Sign in to start your session</p>
-                <form action="../index3.html" method="post">
+                <p class="login-box-msg">Sign in to access the dashboard</p>
+                <form action="{{ route('login') }}" method="post">
+                    @csrf
+
                     <div class="input-group mb-1">
                         <div class="form-floating">
-                            <input id="loginEmail" type="email" class="form-control" value="" placeholder="" />
+                            <input id="loginEmail" type="email" name="email"
+                                class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}"
+                                placeholder="Email" autofocus />
                             <label for="loginEmail">Email</label>
                         </div>
                         <div class="input-group-text"><span class="bi bi-envelope"></span></div>
                     </div>
+                    @error('email')
+                        <div class="invalid-feedback d-block">
+                            {{ $message }}
+                        </div>
+                    @enderror
+
+
                     <div class="input-group mb-1">
                         <div class="form-floating">
-                            <input id="loginPassword" type="password" class="form-control" placeholder="" />
+                            <input id="loginPassword" type="password" name="password"
+                                class="form-control @error('password') is-invalid @enderror" placeholder="Password"
+                                 />
                             <label for="loginPassword">Password</label>
                         </div>
                         <div class="input-group-text"><span class="bi bi-lock-fill"></span></div>
                     </div>
-                    <!--begin::Row-->
+                    @error('password')
+                        <div class="invalid-feedback d-block">
+                            {{ $message }}
+                        </div>
+                    @enderror
+
+
                     <div class="row">
                         <div class="col-8 d-inline-flex align-items-center">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                                <input class="form-check-input" name="remember" type="checkbox" id="flexCheckDefault"
+                                    {{ old('remember') ? 'checked' : '' }} />
                                 <label class="form-check-label" for="flexCheckDefault"> Remember Me </label>
                             </div>
                         </div>
-                        <!-- /.col -->
                         <div class="col-4">
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-primary">Sign In</button>
                             </div>
                         </div>
-                        <!-- /.col -->
                     </div>
-                    <!--end::Row-->
                 </form>
                 <div class="social-auth-links text-center mb-3 d-grid gap-2">
                     <p>- OR -</p>
-                    <a href="#" class="btn btn-primary">
-                        <i class="bi bi-facebook me-2"></i> Sign in using Facebook
-                    </a>
-                    <a href="#" class="btn btn-danger">
+                    <a href="#" class="btn btn-secondary">
                         <i class="bi bi-google me-2"></i> Sign in using Google+
                     </a>
                 </div>
                 <!-- /.social-auth-links -->
                 <p class="mb-1"><a href="forgot-password.html">I forgot my password</a></p>
                 <p class="mb-0">
-                    <a href="register.html" class="text-center"> Register a new membership </a>
+                    <a href="register.html" class="text-center"> New Registration </a>
                 </p>
+
             </div>
+            @include('admin.layouts._message')
             <!-- /.login-card-body -->
         </div>
     </div>
