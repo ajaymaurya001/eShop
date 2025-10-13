@@ -10,9 +10,10 @@ class AuthController extends Controller
 {
     public function showLoginForm()
     {
-        // Assuming your static file is saved as resources/views/auth/login.blade.php
         return view('admin.auth.login');
     }
+
+
 
     public function login(Request $request)
     {
@@ -26,7 +27,13 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            return redirect()->route('admin.dashboard');
+            // verify user or admin to redirect their dashboard
+            $user = Auth::user();
+            if ($user->is_admin) {
+                return redirect()->route('admin.dashboard');
+            } else {
+                return redirect()->route('user.dashboard'); 
+            }
         }
 
         return back()->withErrors([
