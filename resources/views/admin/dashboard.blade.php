@@ -1,7 +1,9 @@
-@extends('admin.layouts.main_layout')
-@section('content')
+@extends('layouts.admin')
 
-    <main class="app-main">
+@section('title', 'Dashboard')
+
+@section('content')
+ <main class="app-main">
         <!--begin::App Content Header-->
         <div class="app-content-header">
             <!--begin::Container-->
@@ -376,5 +378,4 @@
         </div>
         <!--end::App Content-->
     </main>
-
-    @endsection
+@endsection
