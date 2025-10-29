@@ -751,7 +751,11 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
-    if(document.getElementById('newsletter-popup-form')) {
+if (document.getElementById('newsletter-popup-form')) {
+
+    // Check if popup was already shown or closed before
+    if (!localStorage.getItem('newsletter_shown')) {
+
         setTimeout(function() {
             var mpInstance = $.magnificPopup.instance;
             if (mpInstance.isOpen) {
@@ -773,10 +777,16 @@ $(document).ready(function () {
                         close: function() {
                             $('body').css('overflow-x', 'hidden');
                             $('.sticky-header.fixed').css('padding-right', '0');
+                            
+                            // Store flag so popup won't show again
+                            localStorage.setItem('newsletter_shown', 'true');
                         }
                     }
                 });
-            }, 500)
-        }, 10000)
+            }, 500);
+
+        }, 10000);
     }
+}
+
 });

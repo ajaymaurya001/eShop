@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -10,14 +11,11 @@ class AuthController extends Controller
 {
     public function showLoginForm()
     {
-        return view('admin.auth.login');
+        return view('auth.login');
     }
-
-
 
     public function login(Request $request)
     {
-
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
@@ -30,16 +28,35 @@ class AuthController extends Controller
             // verify user or admin to redirect their dashboard
             $user = Auth::user();
             if ($user->is_admin) {
-                return redirect()->route('admin.dashboard');
+                return 'admin user';
+                // return redirect()->route('admin.dashboard');
             } else {
-                return redirect()->route('user.dashboard'); 
+                // return redirect()->route('user.dashboard');
+                return 'only user';
             }
         }
 
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ])->onlyInput('email');
+    }
 
+    public function registration(Request $request) {
+          $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:1|confirmed', 
+        ]);
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'is_admin' => 0,
+        ]);
+
+        Auth::login($user);
+        return redirect()->route('home');
     }
 
     // 3. Handle Logout
@@ -48,6 +65,6 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-         return redirect()->route('show.login.form'); 
+        return redirect()->route('login-form');
     }
 }

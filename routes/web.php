@@ -9,6 +9,10 @@ Route::get('/admin', function(){ return view('admin.dashboard'); })->name('dashb
 
 Route::get('/', function(){ return view('user.home'); })->name('home');
 
+Route::get('/login', [AuthController::class,'showLoginForm'])->name('login-form');
+Route::post('/login', [AuthController::class,'login'])->name('login');
+Route::post('/registration', [AuthController::class,'registration'])->name('registration');
+
 
 
 // Route::get('admin', [AuthController::class, 'showLoginForm'])->name('show.login.form');
