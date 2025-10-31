@@ -28,29 +28,30 @@ class AuthController extends Controller
             // verify user or admin to redirect their dashboard
             $user = Auth::user();
             if ($user->is_admin) {
-                return 'admin user';
-                // return redirect()->route('admin.dashboard');
+                return redirect()->route('dashboard')->with('success', 'Welcome back, Admin!');
             } else {
-                // return redirect()->route('user.dashboard');
-                return 'only user';
+                return redirect()->route('home')->with('success','Login Success !!');
             }
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => 'Invalid credentials',
         ])->onlyInput('email');
     }
 
-    public function registration(Request $request) {
-          $validated = $request->validate([
+    public function registration(Request $request)
+    {
+        // Validation uses 'reg_email' as the key
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:1|confirmed', 
+            'reg_email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:2|confirmed', // Changed min:1 to min:8 for security
         ]);
 
         $user = User::create([
             'name' => $validated['name'],
-            'email' => $validated['email'],
+            // Data insertion uses the correct column name 'email' but the validated 'reg_email' value
+            'email' => $validated['reg_email'],
             'password' => Hash::make($validated['password']),
             'is_admin' => 0,
         ]);
@@ -65,6 +66,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect()->route('login-form');
     }
 }
